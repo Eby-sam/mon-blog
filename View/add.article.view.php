@@ -1,3 +1,6 @@
+<?php
+require __DIR__ . "_Partials/header.php";
+?>
 <main>
     <a id="previous" href="?controller=articles"><i class="fas fa-arrow-left"></i>Retour</a>
     <form class="width_80" method="post" action="">
