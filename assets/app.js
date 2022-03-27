@@ -1,3 +1,4 @@
+
 if (document.getElementById("error")) {
     document.getElementById("closeModal").style.display = "block";
     closeModal("error");

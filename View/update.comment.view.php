@@ -1,4 +1,5 @@
 <?php
+
 $id = $_GET['id'];
 $manager = new \Model\Manager\CommentManager();
 $comment = $manager->getCommentArticle($id);

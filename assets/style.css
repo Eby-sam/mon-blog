@@ -15,7 +15,7 @@ body {
 
 header {
     box-shadow: 10px 10px 10px grey;
-    color: #fcfcfc;
+    color: #e73131;
     padding: 25px;
 }
 
@@ -25,7 +25,7 @@ a {
 }
 
 a:hover {
-    color: #ffffff;
+    color: #e73131;
     text-decoration: underline #e73131;
 }
 
@@ -65,10 +65,11 @@ h1 {
 
 #presentation {
     position: absolute;
-    color: white;
-    font-size: 40px;
-    width: 35%;
+    color: red;
+    font-size: 50px;
+    width: 90%;
     margin: 100px 30px;
+    margin-top: 20px;
 }
 
 main {
@@ -76,7 +77,7 @@ main {
     margin: auto;
 }
 
-#imageMarvel {
+#image {
     margin-top: 25px;
 }
 
@@ -105,7 +106,6 @@ main {
 footer {
     background-color: #e73131;
     padding: 20px;
-    width: 100%;
 }
 
 .linkSocial {
@@ -124,7 +124,7 @@ label, input, textarea, .form-control, #submit {
 
 #submit {
     margin: 20px auto;
-    background-color: #31a7e7;
+    background-color: #e73131;
 }
 
 .colorRed {
@@ -132,7 +132,7 @@ label, input, textarea, .form-control, #submit {
 }
 
 #pseudo:hover {
-    color: #26ac2f;
+    color: #00aade;
 }
 
 .fab, .fas {
@@ -166,7 +166,7 @@ label, input, textarea, .form-control, #submit {
 }
 
 .buttonChange {
-    background-color: #31a7e7;
+    background-color: #e73131;
     position: absolute;
     right: 15%;
     padding: 10px;
@@ -178,7 +178,7 @@ label, input, textarea, .form-control, #submit {
 .buttonChange:hover {
     text-decoration: none;
     color: white;
-    background-color: #289ac3;
+    background-color: #c32828;
 }
 
 #divNew {
@@ -232,7 +232,7 @@ label, input, textarea, .form-control, #submit {
 
 .buttonChangeComment {
     position: absolute;
-    color: #ffffff;
+    color: #e73131;
     padding: 10px;
 }
 
@@ -269,7 +269,7 @@ header {
 }
 
 #previous {
-    border: 1px solid #c82d38;
+    border: 1px solid red;
     padding: 8px;
     border-radius: 10px;
     box-shadow: 3px 3px 10px grey;
@@ -280,7 +280,7 @@ header {
 }
 
 #previous:hover {
-    background-color: #0f80cf;
+    background-color: red;
     color: white;
     text-decoration: none;
 }
@@ -322,7 +322,6 @@ header {
 
 #error {
     background-color: red;
-    color: white;
 }
 
 
@@ -410,11 +409,11 @@ header {
         text-align: center;
         margin: 20px;
     }
-    #imageMarvel {
+    #image {
         display: none;
     }
     #presentation {
-        color: #0f80cf;
+        color: red;
         position: relative;
         font-size: 40px;
         width: 80%;

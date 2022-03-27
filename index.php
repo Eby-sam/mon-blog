@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 
 require_once './Model/DB.php';
@@ -18,7 +17,6 @@ require_once './Model/Manager/CommentManager.php';
 require_once './Controller/HomeController.php';
 require_once './Controller/ArticleController.php';
 require_once './Controller/CommentController.php';
-require_once './Controller/UserController.php';
 
 use Controller\CommentController;
 use Controller\HomeController;
@@ -58,6 +56,7 @@ if(isset($_GET['controller'])) {
             if (isset($_GET['id'])) {
                 $controller->article($_GET["id"]);
             }
+
             if (isset($_GET['controller2'])) {
                 switch ($_GET['controller2']) {
                     case 'comments' :

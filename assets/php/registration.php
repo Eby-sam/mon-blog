@@ -1,5 +1,4 @@
 <?php
-
 use Model\DB;
 
 include "functions.php";
@@ -14,12 +13,11 @@ if (isset($_POST["pseudo"], $_POST["email"], $_POST["password"])) {
 
     $encryptedPassword = password_hash($password, PASSWORD_BCRYPT);
 
-    $requete = $bdd->prepare("SELECT * FROM user WHERE email = :email OR pseudo = :pseudo");
-    $requete->bindParam(":email", $email);
-    $requete->bindParam(":password", $password);    $state = $requete->execute();
+    $requete = $bdd->prepare("SELECT * FROM user WHERE email = '" . $email . "' OR pseudo = '" . $pseudo ."'");
+    $state = $requete->execute();
 
     if ($state) {
-        foreach ($requete->fetch() as $user) {
+        foreach ($requete->fetchAll() as $user) {
             $mailUse = $user['email'];
             $pseudoUse = $user['pseudo'];
 
@@ -33,7 +31,7 @@ if (isset($_POST["pseudo"], $_POST["email"], $_POST["password"])) {
             $number = preg_match('@[0-9]@', $password);
 
             if($maj && $min && $number && strlen($password) > 8) {
-                // People who register automatically have role 2: user.
+                // People who register automatically have role 2: viewer.
                 $sql = "INSERT INTO user VALUES (null, '$pseudo', '$email', '$encryptedPassword', 2)";
 
                 $bdd->exec($sql);

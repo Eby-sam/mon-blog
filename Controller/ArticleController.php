@@ -92,6 +92,7 @@ class ArticleController {
      * Delete a article
      * @param $fields
      */
+
     public function deleteArticle($fields) {
         if (isset($fields['id'], $fields['user_fk'])) {
             $userManager = new UserManager();
@@ -106,7 +107,6 @@ class ArticleController {
                 $articleManager->delete($article);
             }
         }
-
         $this->render('delete.article', 'Supprimer un article');
     }
 }

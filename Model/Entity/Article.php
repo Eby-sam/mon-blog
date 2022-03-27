@@ -18,6 +18,7 @@ class Article {
         $this->user_fk = $user_fk;
     }
 
+
     /**
      * @return int|null
      */

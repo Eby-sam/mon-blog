@@ -21,4 +21,5 @@ class HomeController {
             'user' => $user,
         ]);
     }
+
 }
