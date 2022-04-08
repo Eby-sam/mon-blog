@@ -3,7 +3,7 @@
 namespace App\Model\Entity;
 
 use App\Model\Entity\AbstractEntity;
-use User;
+use App\Model\Entity\User;
 
 class Comment extends AbstractEntity
 {

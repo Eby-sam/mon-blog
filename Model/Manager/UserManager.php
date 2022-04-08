@@ -4,7 +4,7 @@ namespace App\Model\Manager;
 
 use App\Model\Entity\Role;
 use Connect;
-use User;
+use App\Model\Entity\User;
 
 class UserManager
 {
@@ -54,10 +54,10 @@ class UserManager
 
     /**
      * Add User
-     * @param User $user
+     * @param \App\Model\Manager\User $user
      * @return bool
      */
-    public static function addUser(User &$user): bool
+    public static function addUser(User & $user): bool
     {
         $stmt = Connect::dbConnect()->prepare("
             INSERT INTO " . self::TABLE . " (email, firstname, lastname, password, role_fk) 
@@ -68,12 +68,29 @@ class UserManager
         $stmt->bindValue(':firstname', $user->getFirstname());
         $stmt->bindValue(':lastname', $user->getLastname());
         $stmt->bindValue(':password', $user->getPassword());
-        $stmt->bindValue(':role_fk', 1);
+        $stmt->bindValue(':role_fk', $user->getRole()->getId());
 
         $result = $stmt->execute();
         $user->setId(Connect::dbConnect()->lastInsertId());
 
         return $result;
+    }
+
+    /**
+     * function get role by Id .
+     */
+    public static function getById (int $id): Role {
+        $role = new Role();
+        $request = Connect::dbConnect()->query("
+            SELECT * FROM role WHERE id = :id
+        ");
+        $request->bindValue(':id', $id);
+        $request->execute();
+        if($roleData  = $request->fetch()) {
+            $role->setId($roleData['id']);
+            $role->setRoleName($roleData['role_name']);
+        }
+        return $role;
     }
 
     /**

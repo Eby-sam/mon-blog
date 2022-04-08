@@ -2,9 +2,10 @@
 
 namespace App\Controller;
 
+use App\Model\Entity\User;
 use App\Model\Manager\RoleManager;
 use App\Model\Manager\UserManager;
-use User;
+
 
 class UserController extends AbstractController
 {
@@ -108,7 +109,7 @@ class UserController extends AbstractController
                     if(null !== $user->getId()) {
                         $_SESSION['success'] = "Compte activé";
                         $user->setPassword('');
-                        $_SESSION['user'] = $user;
+                        $_SESSION['SimpleUser'] = $user;
                         header("Location: index.php/?c=home");
                     }
                     else {

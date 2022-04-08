@@ -5,7 +5,7 @@ namespace App\Model\Manager;
 
 use App\Model\Entity\Role;
 use Connect;
-use User;
+use App\Model\Entity\User;
 
 class RoleManager
 {
@@ -42,6 +42,7 @@ class RoleManager
         $rQuery = Connect::dbConnect()->query("
             SELECT * FROM role WHERE role_name = '".$roleName."'
         ");
+
         if($rQuery && $roleData = $rQuery->fetch()) {
             $role->setId($roleData['id']);
             $role->setRoleName($roleData['role_name']);

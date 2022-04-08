@@ -3,7 +3,8 @@
 namespace App\Controller;
 
 use App\Model\Entity\Role;
-use App\Model\Manager\RoleManager;use User;
+use App\Model\Manager\RoleManager;
+use App\Model\Entity\User;
 
 abstract class AbstractController
 {

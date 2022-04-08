@@ -1,6 +1,6 @@
 setTimeout(() => {
     document.querySelectorAll('.alert').forEach(error => error.remove());
-}, 3000);
+}, 5000);
 
 function validateForm()
 {

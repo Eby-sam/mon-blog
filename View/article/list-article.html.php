@@ -33,7 +33,9 @@ $articles = $data['articles']; ?>
                 <a href="/index.php?c=comment&a=delete-comment&id=<?= $item->getId() ?>">Supprimer</a><?php
                 }
             }
+
             ?>
+
             </div>
         <a href="/index.php?c=comment&a=add-comment&id=<?= $article->getId() ?>">Ajouter un commentaire</a>
             <hr>

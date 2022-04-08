@@ -38,24 +38,20 @@ if (isset($_SESSION['success'])) {
 ?>
 <header>
     <nav class="menu">
-        <i class="fas fa-bars"></i>
         <ul>
             <?php
             if (!UserController::verifyUserConnect()) { ?>
                 <li><a href="/index.php?c=home">Home</a></li>
                 <li><a href="/index.php?c=user&a=register">S'enregistrer</a></li>
                 <li><a href="/index.php?c=user&a=connected">Se Connecter</a></li><?php
-            } else { ?>
+            }
+            else { ?>
                 <li><a href="/index.php?c=home">Home</a></li>
                 <li><a href="/index.php?c=article&a=list-article">Articles</a></li>
                 <li><a href="/index.php?c=article&a=add-article">Ajouter un article</a></li>
                 <li><a href="/index.php?c=user" title="Utilisateurs">Utilisateurs</a></li>
                 <li><a href="/index.php?c=user&a=disconnected">Se déconnecter</a></li><?php
-            }
-            ?>
-
-
-
+            } ?>
         </ul>
     </nav>
 </header>
