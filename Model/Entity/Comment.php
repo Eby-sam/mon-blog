@@ -1,107 +1,67 @@
 <?php
 
-namespace Model\Entity;
+namespace App\Model\Entity;
 
-class Comment {
-    private ?int $id;
-    private ?string $title;
-    private ?string $content;
-    private ?string $date;
-    private ?User $user_fk;
-    private ?Article $article_fk;
+use App\Model\Entity\AbstractEntity;
+use User;
 
-    public function __construct(int $id= null, string $title = null, string $content = null, string $date = null, User $user_fk = null, Article $article_fk = null) {
-        $this->id = $id;
-        $this->title = $title;
-        $this->content = $content;
-        $this->date = $date;
-        $this->user_fk = $user_fk;
-        $this->article_fk = $article_fk;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getId(): ?int {
-        return $this->id;
-    }
-
-    /**
-     * @param int|null $id
-     */
-    public function setId(?int $id): void {
-        $this->id = $id;
-    }
+class Comment extends AbstractEntity
+{
+    private string $content;
+    private  User $author;
+    private  Article $article;
 
     /**
      * @return string
      */
-    public function getTitle(): string {
-        return $this->title;
-    }
-
-    /**
-     * @param string $title
-     */
-    public function setTitle(string $title): string {
-        $this->title = $title;
-        return $title;
-    }
-
-    /**
-     * @return string
-     */
-    public function getContent(): string {
+    public function getContent(): string
+    {
         return $this->content;
     }
 
     /**
      * @param string $content
+     * @return Comment
      */
-    public function setContent(string $content): string {
+    public function setContent(string $content): self
+    {
         $this->content = $content;
-        return $content;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDate(): string {
-        return $this->date;
-    }
-
-    /**
-     * @param string $date
-     */
-    public function setDate(string $date): void {
-        $this->date = $date;
+        return $this;
     }
 
     /**
      * @return User
      */
-    public function getUserFk(): User {
-        return $this->user_fk;
+    public function getAuthor(): User
+    {
+        return $this->author;
     }
 
     /**
-     * @param User $user_fk
+     * @param User $author
+     * @return Comment
      */
-    public function setUserFk(User $user_fk): void {
-        $this->user_fk = $user_fk;
+    public function setAuthor(User $author): self
+    {
+        $this->author = $author;
+        return $this;
     }
 
     /**
      * @return Article
      */
-    public function getArticleFk(): Article {
-        return $this->article_fk;
+    public function getArticle(): Article
+    {
+        return $this->article;
     }
 
     /**
-     * @param Article $article_fk
+     * @param Article $article
+     * @return Comment
      */
-    public function setArticleFk(Article $article_fk): void {
-        $this->article_fk = $article_fk;
+    public function setArticle(Article $article): self
+    {
+        $this->article = $article;
+        return $this;
     }
 }

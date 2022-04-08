@@ -1,42 +1,29 @@
 <?php
 
-namespace Model\Entity;
+namespace App\Model\Entity;
 
-class Role {
+class Role extends AbstractEntity
+{
+    private ?string $role_name;
 
-    private ?int $id;
-    private string $role;
-
-    public function __construct( int $id= null, string $role) {
-        $this->id = $id;
-        $this->role = $role;
+    /**
+     * @return string|null
+     */
+    public function getRoleName(): ?string
+    {
+        return $this->role_name;
     }
 
     /**
-     * @return int|null
+     * @param string|null $role_name
+     * @return $this
      */
-    public function getId(): ?int {
-        return $this->id;
+    public function setRoleName(?string $role_name): self
+    {
+        $this->role_name = $role_name;
+        return $this;
     }
 
-    /**
-     * @param int|null $id
-     */
-    public function setId(?int $id): void {
-        $this->id = $id;
-    }
 
-    /**
-     * @return string
-     */
-    public function getRole(): string {
-        return $this->role;
-    }
 
-    /**
-     * @param string $role
-     */
-    public function setRole(string $role): void {
-        $this->role = $role;
-    }
 }

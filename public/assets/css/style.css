@@ -1,0 +1,156 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #e2e0e0;
+}
+
+
+
+.menu > i:first-child {
+    display: none;
+
+}
+
+.menu > ul li {
+    display: inline-block;
+    padding: 1rem;
+    background-color: #b9b9b9;
+    border-radius: 15px;
+}
+
+.alert {
+    position: relative;
+    left: 0;
+    top: 0;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    width: 100%;
+    border-bottom: 1px solid #FEFEFE;
+}
+
+.alert-error {
+    background-color: #ff0000;
+}
+
+.alert-success {
+    background-color: #00ff00;
+}
+
+h1 {
+    font-size: 2rem;
+    text-align: center;
+    margin: 1.2rem;
+}
+
+.home {
+    background-color: #787878;
+    color: white;
+}
+
+a {
+    color: black;
+}
+
+a:hover {
+    color: black;
+}
+
+ul, li {
+    display: flex;
+    justify-content: center;
+}
+
+li {
+    margin-inline:  2rem;
+    font-size: 1.2rem;
+}
+
+#form-register, #form-login , #form-addArticle, #form-addComment, #form-editArticle, #listUser, #container-list {
+    display: flex;
+
+}
+
+
+#register, #login {
+    text-align: center;
+    border: 1px solid black;
+    width: 30%;
+}
+
+.save {
+    font-size: 1.2rem;
+    padding: 0.2rem;
+}
+
+input {
+    margin: 0.4rem;
+}
+
+#article-show, #addArticle, #addComment, #editArticle, #listUser {
+    border: 3px solid black;
+    border-radius: 10px;
+    width: 90%;
+    margin: 0.5rem;
+    padding: 0.4rem;
+}
+
+#comment {
+    margin: 1rem;
+    text-align: start;
+}
+
+#comments {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.titleA {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.contentA {
+    font-size: 1rem;
+}
+
+.authorA {
+    text-align: end;
+    font-size: 0.8rem;
+
+}
+
+.comment {
+    font-size: 0.8rem;
+}
+
+#container-article {
+    display: flex;
+    justify-content: center;
+    width: 90%;
+}
+
+.nameC {
+    font-size: 0.8rem;
+}
+
+
+
+@media screen and (max-width: 1066px) {
+    #author {
+        text-align: center;
+    }
+}
+
+@media  screen and (max-width: 656px) {
+    #article-show,#listUser {
+        width: 100%;
+    }
+}

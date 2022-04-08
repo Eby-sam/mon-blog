@@ -1,122 +1,127 @@
 <?php
 
-namespace Model\Manager;
+namespace App\Model\Manager;
 
-use Model\Entity\Article;
-use Model\Entity\User;
-use Model\Manager\Traits\ManagerTrait;
-use Model\DB;
-use Model\User\UserManager;
+use App\Model\Entity\Article;
+use Connect;
 
-class ArticleManager {
-
-    use ManagerTrait;
-
-    private UserManager $userManager;
-
-    public function __construct() {
-        $this->userManager = new UserManager();
-    }
+class ArticleManager
+{
+    public const TABLE = 'article';
 
     /**
-     * Return all articles
-     */
-    public function getAll(): array {
-        $articles = [];
-        $request = DB::getInstance()->prepare("SELECT * FROM article");
-        $result = $request->execute();
-        if($result) {
-            $data = $request->fetchAll();
-            foreach ($data as $article_data) {
-                $user = UserManager::getManager()->getUser($article_data['user_fk']);
-                if($user->getId()) {
-                    $articles[] = new Article($article_data['id'], $article_data['title'],  $article_data['content'], $article_data['picture'], $user);
-                }
-            }
-        }
-        return $articles;
-    }
-
-    /**
-     * Return a article based on id.
-     * @param $id
-     * @return Article
-     */
-    public function getArticle($id) {
-        $request = DB::getInstance()->prepare("SELECT * FROM article WHERE id = :id");
-        $request->bindValue(':id', $id);
-        $request->execute();
-        $article_data = $request->fetch();
-        $articles = new Article();
-        if ($article_data) {
-            $articles->setId($article_data['id']);
-            $articles->setTitle($article_data['title']);
-            $articles->setContent($article_data['content']);
-            $articles->setPicture($article_data['picture']);
-            $user = $this->userManager->getUser($article_data['user_fk']);
-            $articles->setUserFk($user);
-        }
-        return $articles;
-    }
-
-    /**
-     * @param int $id
      * @return array
      */
-    public function getArticle2(int $id): array {
+    public static function findAll(): array
+    {
         $articles = [];
-        $request = DB::getInstance()->prepare("SELECT * FROM article WHERE id = :id");
-        $request->bindValue(':id', $id);
-        $result = $request->execute();
-        if($result) {
-            $data = $request->fetchAll();
-            foreach ($data as $article_data) {
-                $user = UserManager::getManager()->getUser($article_data['user_fk']);
-                if($user->getId()) {
-                    $articles[] = new Article($article_data['id'], $article_data['title'],  $article_data['content'], $article_data['picture'], $user);
-                }
+        $query = Connect::dbConnect()->query("SELECT * FROM " . self::TABLE);
+        if ($query) {
+            $userManager = new UserManager();
+            $format = 'Y-m-d H:i:s';
+
+            foreach ($query->fetchAll() as $articleData) {
+                $articles[] = (new Article())
+                    ->setId($articleData['id'])
+                    ->setAuthor(UserManager::getUserById($articleData['user_fk']))
+                    ->setContent($articleData['content'])
+                    ->setTitle($articleData['title']);
             }
         }
         return $articles;
     }
 
+
     /**
-     * Add an article into the database.
+     * Add article in db.
      * @param Article $article
-     * @return bool
+     * @param string $title
+     * @param string $content
+     * @param int $id
+     * @return void
      */
-    public function add(Article $article): bool {
-        $request = DB::getInstance()->prepare("
-            INSERT INTO article (title, content, picture, user_fk)
-                VALUES (:title, :content, :picture, :user_fk) 
+    public static function addNewArticle(Article &$article, string $title, string $content, int $id): bool
+    {
+        $stmt = Connect::dbConnect()->prepare("
+            INSERT INTO " . self::TABLE . " (title, content, user_fk)
+            VALUES (:title, :content, :user_fk)
         ");
 
-        $request->bindValue(':title', $article->getTitle());
-        $request->bindValue(':content', $article->getContent());
-        $request->bindValue(':picture', $article->getPicture());
-        $request->bindValue(':user_fk', $article->getUserFk()->getId());
+        $stmt->bindParam(':title', $title);
+        $stmt->bindParam(':content', $content);
+        $stmt->bindParam('user_fk', $id);
 
-        return $request->execute() && DB::getInstance()->lastInsertId() != 0;
+
+        $result = $stmt->execute();
+        $article->setId(Connect::dbConnect()->lastInsertId());
+        return $result;
     }
 
     /**
-     * @param Article $article
+     * verify article exist
+     * @param int $id
      * @return bool
      */
-    public function update (Article $article): bool {
-        $request = DB::getInstance()->prepare("UPDATE article SET title = :title, content = :content, picture = :picture WHERE id = :id");
-
-        $request->bindValue(':id', $article->getId());
-        $request->bindValue(':title', $article->setTitle($article->getTitle()));
-        $request->bindValue(':content', $article->setContent($article->getContent()));
-        $request->bindValue(':picture', $article->setPicture($article->getPicture()));
-
-        return $request->execute();
+    public static function articleExists(int $id): bool
+    {
+        $result = Connect::dbConnect()->query("SELECT count(*) as cnt FROM " . self::TABLE . " WHERE id = $id");
+        return $result ? $result->fetch()['cnt'] : 0;
     }
 
-    public function delete (Article $article) {
-        $id = $article->getId();
-        $request = DB::getInstance()->prepare("DELETE FROM article WHERE id = $id");
-        return $request->execute();
+    /**
+     * retrieve the article by its id
+     * @param int $id
+     * @return Article|null
+     */
+    public static function getArticleById(int $id): ?Article
+    {
+        $result = Connect::dbConnect()->query("SELECT * FROM " . self::TABLE . " WHERE id = $id");
+        return $result ? self::makeArticle($result->fetch()) : null;
+    }
+
+    /**
+     * @param array $data
+     * @return Article
+     */
+    private static function makeArticle(array $data): Article
+    {
+        return (new Article())
+            ->setId($data['id'])
+            ->setTitle($data['title'])
+            ->setContent($data['content'])
+            ->setAuthor(UserManager::getUserById($data['user_fk']));
+    }
+
+    /**
+     * @param Article|null $article
+     * @return false|int
+     */
+    public static function deleteArticle(?Article $article)
+    {
+        if (self::articleExists($article->getId())) {
+            return Connect::dbConnect()->exec("
+            DELETE FROM " . self::TABLE . " WHERE id = {$article->getId()}
+        ");
+        }
+        return false;
+    }
+
+    /**
+     * modify article
+     * @param int $id
+     * @param string $title
+     * @param string $content
+     * @return void
+     */
+    public static function editArticle(int $id, string $title, string $content)
+    {
+            $stmt = Connect::dbConnect()->prepare("
+            UPDATE " . self::TABLE . " SET title= :title, content = :content WHERE id = :id
+                ");
+            $stmt->bindParam(':id', $id);
+            $stmt->bindParam(':title', $title);
+            $stmt->bindParam(':content', $content);
+
+            $stmt->execute();
     }
 }

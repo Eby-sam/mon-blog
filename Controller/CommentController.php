@@ -1,125 +1,69 @@
 <?php
 
-namespace Controller;
+namespace App\Controller;
 
-use Controller\Traits\RenderViewTrait;
-use Model\Entity\Comment;
-use Model\Manager\ArticleManager;
-use Model\User\UserManager;
-use Model\Manager\CommentManager;
+use App\Model\Entity\Comment;
+use App\Model\Manager\ArticleManager;
+use App\Model\Manager\CommentManager;
+use App\Model\Manager\UserManager;
+use User;
 
-
-class CommentController {
-
-    use RenderViewTrait;
+class CommentController extends AbstractController
+{
+    /**
+     * @return void
+     */
+    public function index()
+    {
+        $this->render('home/index');
+    }
 
     /**
-     * display the list of comment
+     * @param int $id
+     * @return void
      */
-    public function commentsArticle($article_fk): array {
-        $manager = new CommentManager();
-        $comments = $manager->getCommentsArticle($article_fk);
+    public function addComment(int $id)
+    {
+        self::redirectIfNotConnected();
 
-        $this->render('article.comment', 'Article', [
-            'comments' => $comments,
+        if($this->verifyFormSubmit()) {
+            $userSession = $_SESSION['user'];
+            /* @var User $userSession */
+            $user =$userSession->getId();
+
+            $content = $this->dataClean($this->getFormField('content'));
+
+            CommentManager::addComment($content,$user,$id);
+            header('Location: /index.php?c=article&a=list-article');
+        }
+        $this->render('comment/add-comment',[
+            'article'=>ArticleManager::getArticleById($id)
         ]);
-        return $comments;
     }
 
-    public function commentArticle($id): array {
-        $manager = new CommentManager();
-        $comments = $manager->getCommentsArticle($id);
-
-        $this->render('update.comment', 'Article', [
-            'comments' => $comments,
+    /**
+     * all comments
+     * @return void
+     */
+    public function listComment() {
+        $this->render('comment/list-comment', [
+            'comment' => CommentManager::findAll(),
         ]);
-        return $comments;
     }
 
     /**
-     * add a new comment
-     * @param $fields
+     * @param int $id
+     * @return void
      */
-    public function addComment($fields){
-        if(isset($fields['title'],$fields['content'], $fields['date'], $fields['user_fk'], $fields['article_fk'])) {
-            $userManager = new UserManager();
-            $articleManager = new ArticleManager();
-            $commentManager = new CommentManager();
-
-            $title = htmlentities($fields['title']);
-            $content = htmlentities($fields['content']);
-            $date = htmlentities($fields['date']);
-            $user_fk = intval($fields['user_fk']);
-            $article_fk = intval($fields['article_fk']);
-
-            $user_fk = $userManager->getUser($user_fk);
-            $article_fk = $articleManager->getArticle($article_fk);
-            if($user_fk->getId()) {
-                if ($article_fk->getId()) {
-                    $comment = new Comment(null, $title, $content, $date, $user_fk, $article_fk);
-                    $commentManager->add($comment);
-                }
+    public function deleteComment(int $id) {
+        if (CommentManager::commentExists($id)) {
+            if (CommentManager::deleteComment($id)) {
+                header('Location: /index.php?c=article&a=list-article');
+            }
+            else {
+                header('Location: /index.php?c=home&a=index');
             }
         }
-
-        $this->render('add.comment', 'Ajouter un commentaire');
-    }
-
-    /**
-     * Update a comment
-     * @param $fields
-     */
-    public function updateComment($fields) {
-        if (isset($fields['id'], $fields['title'], $fields['content'], $fields['date'], $fields['user_fk'], $fields['article_fk'])) {
-            $userManager = new UserManager();
-            $articleManager = new ArticleManager();
-            $commentManager = new CommentManager();
-
-            $id = intval($fields['id']);
-            $title = htmlentities($fields['title']);
-            $content = htmlentities($fields['content']);
-            $date = htmlentities($fields['date']);
-            $user_fk = intval($fields['user_fk']);
-            $article_fk = intval($fields['article_fk']);
-
-            $user_fk = $userManager->getUser($user_fk);
-            $article_fk = $articleManager->getArticle($article_fk);
-            if($user_fk->getId()) {
-                if ($article_fk->getId()) {
-                    $comment = new Comment($id, $title, $content, $date);
-                    $commentManager->update($comment);
-                }
-            }
+          $this->index();
         }
-
-        $this->render('update.comment', 'Modifier un commentaire');
-    }
-
-    /**
-     * delete a comment
-     * @param $fields
-     */
-    public function deleteComment($fields) {
-        if (isset($fields['id'], $fields['user_fk'], $fields['article_fk'])) {
-            $userManager = new UserManager();
-            $articleManager = new ArticleManager();
-            $commentManager = new CommentManager();
-
-            $id = intval($fields['id']);
-            $user_fk = intval($fields['user_fk']);
-            $article_fk = intval($fields['article_fk']);
-
-            $user_fk = $userManager->getUser($user_fk);
-            $article_fk = $articleManager->getArticle($article_fk);
-            if ($user_fk->getId()) {
-                if ($article_fk->getId()) {
-                    $comment = new Comment($id);
-                    $commentManager->delete($comment);
-                }
-
-            }
-        }
-
-        $this->render('delete.comment', 'Supprimer un commentaire');
-    }
 }

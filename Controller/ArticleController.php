@@ -1,112 +1,101 @@
 <?php
 
-namespace Controller;
+namespace App\Controller;
 
-use Controller\Traits\RenderViewTrait;
-use Exception;
-use Model\Entity\Article;
-use Model\Manager\ArticleManager;
-use Model\User\UserManager;
-use Model\Entity\User;
+use App\Model\Entity\Article;
+use App\Model\Manager\ArticleManager;
+use App\Model\Manager\CommentManager;
+use App\Model\Manager\UserManager;
+use User;
 
-class ArticleController {
-
-    use RenderViewTrait;
+class ArticleController extends AbstractController
+{
+    /**
+     * @return void
+     */
+    public function index()
+    {
+        $this->render('home/index');
+    }
 
     /**
-     * Display the list of article
+     * add an item
+     * @return void
      */
-    public function articles() {
-        $manager = new ArticleManager();
-        $articles = $manager->getAll();
+    public function addArticle()
+    {
+        self::redirectIfNotConnected();
+        self::verifyRole();
+        if (!self::verifyRole()) {
+            header('Location: /index.php?c=home');
+        }
 
-        $this->render('articles', 'Articles', [
-            'articles' => $articles,
+
+        if($this->verifyFormSubmit()) {
+            $userSession = $_SESSION['user'];
+            /* @var User $userSession */
+            $user = UserManager::getUserById($userSession->getId());
+
+            $title = $this->dataClean($this->getFormField('title'));
+            $content = $this->dataClean($this->getFormField('content'));
+
+            $article = new Article();
+            $article
+                ->setTitle($title)
+                ->setContent($content)
+                ->setAuthor($user)
+            ;
+
+            if(ArticleManager::addNewArticle($article, $title, $content, $_SESSION['user']->getId())) {
+               header('Location: /index.php?c=article&a=list-article');
+            }
+        }
+
+        $this->render('article/add-article');
+    }
+
+    /**
+     * all articles
+     * @return void
+     */
+    public function listArticle() {
+        $this->render('article/list-article', [
+            'articles' => ArticleManager::findAll(),
         ]);
     }
 
     /**
-     * @param $id
-     * @return Article
+     * delete an item
+     * @param int $id
+     * @return void
      */
-    public function article($id): Article {
-        $manager = new ArticleManager();
-        $articles = $manager->getArticle($id);
+    public function deleteArticle(int $id) {
+        if (ArticleManager::articleExists($id)) {
+            $article = ArticleManager::getArticleById($id);
+            $deleted = ArticleManager::deleteArticle($article);
+            header('Location: /index.php?c=article&a=list-article');
+        }
+        $this->index();
+        }
 
-        $this->render('article.comment', 'Article', [
-            'articles' => $articles,
+    /**
+     * edit an article
+     * @param int $id
+     * @return void
+     */
+    public function editArticle(int $id)
+    {
+        if (isset($_POST['save'])) {
+            if (ArticleManager::articleExists($id)) {
+                $title = $this->dataClean($this->getFormField('title'));
+                $content = $this->dataClean($this->getFormField('content'));
+
+                ArticleManager::editArticle($id, $title, $content);
+                header('Location: /index.php?c=article&a=list-article');
+            }
+        }
+        $this->render('article/edit-article', [
+            'article'=>ArticleManager::getArticleById($id)
         ]);
-        return $articles;
-    }
-
-    /**
-     * Add a new article
-     * @param $fields
-     */
-    public function addArticle($fields) {
-        if(isset($fields['title'],$fields['content'], $fields['picture'], $fields['user_fk'])) {
-            $userManager = new UserManager();
-            $articleManager = new ArticleManager();
-
-            $title = htmlentities($fields['title']);
-            $content = htmlentities($fields['content']);
-            $picture = htmlentities($fields['picture']);
-            $user_fk = intval($fields['user_fk']);
-
-            $user_fk = $userManager->getUser($user_fk);
-            if($user_fk->getId()) {
-                $article = new Article(null, $title, $content, $picture, $user_fk);
-                $articleManager->add($article);
-            }
-        }
-
-        $this->render('add.article', 'Ajouter un article');
-    }
-
-    /**
-     * Update a article
-     * @param $fields
-     */
-    public function updateArticle($fields) {
-        if (isset($fields['id'], $fields['title'], $fields['content'], $fields['picture'], $fields['user_fk'])) {
-            $userManager = new UserManager();
-            $articleManager = new ArticleManager();
-
-            $id = intval($fields['id']);
-            $title = htmlentities($fields['title']);
-            $content = htmlentities($fields['content']);
-            $picture = htmlentities($fields['picture']);
-            $user_fk = intval($fields['user_fk']);
-
-            $user_fk = $userManager->getUser($user_fk);
-            if ($user_fk->getId()) {
-                $article = new Article($id, $title, $content, $picture);
-                $articleManager->update($article);
-            }
-        }
-
-        $this->render('update.article', 'Modifier un article');
-    }
-
-    /**
-     * Delete a article
-     * @param $fields
-     */
-
-    public function deleteArticle($fields) {
-        if (isset($fields['id'], $fields['user_fk'])) {
-            $userManager = new UserManager();
-            $articleManager = new ArticleManager();
-
-            $id = intval($fields['id']);
-            $user_fk = intval($fields['user_fk']);
-
-            $user_fk = $userManager->getUser($user_fk);
-            if ($user_fk->getId()) {
-                $article = new Article($id);
-                $articleManager->delete($article);
-            }
-        }
-        $this->render('delete.article', 'Supprimer un article');
     }
 }

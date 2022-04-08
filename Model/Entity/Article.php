@@ -1,94 +1,67 @@
 <?php
 
-namespace Model\Entity;
+namespace App\Model\Entity;
 
-class Article {
+use App\Model\Entity\AbstractEntity;
+use User;
 
-    private ?int $id;
-    private ?string $title;
-    private ?string $content;
-    private ?string $picture;
-    private ?User $user_fk;
-
-    public function __construct(int $id= null, string $title = null, string $content = null,  string $picture = null, User $user_fk = null) {
-        $this->id = $id;
-        $this->title = $title;
-        $this->content = $content;
-        $this->picture = $picture;
-        $this->user_fk = $user_fk;
-    }
-
-
-    /**
-     * @return int|null
-     */
-    public function getId(): ?int {
-        return $this->id;
-    }
-
-    /**
-     * @param int|null $id
-     */
-    public function setId(?int $id): void {
-        $this->id = $id;
-    }
+class Article extends AbstractEntity
+{
+    private string $title;
+    private string $content;
+    private User $author;
 
     /**
      * @return string
      */
-    public function getTitle(): string {
+    public function getTitle(): string
+    {
         return $this->title;
     }
 
     /**
      * @param string $title
+     * @return Article
      */
-    public function setTitle(string $title): string {
+    public function setTitle(string $title): self
+    {
         $this->title = $title;
-        return $title;
+        return $this;
     }
 
     /**
      * @return string
      */
-    public function getContent(): string {
+    public function getContent(): string
+    {
         return $this->content;
     }
 
     /**
      * @param string $content
+     * @return Article
      */
-    public function setContent(string $content): string {
+    public function setContent(string $content): self
+    {
         $this->content = $content;
-        return $content;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPicture(): string {
-        return $this->picture;
-    }
-
-    /**
-     * @param string $picture
-     */
-    public function setPicture(string $picture): string {
-        $this->picture = $picture;
-        return $picture;
+        return $this;
     }
 
     /**
      * @return User
      */
-    public function getUserFk(): User {
-        return $this->user_fk;
+    public function getAuthor(): User
+    {
+        return $this->author;
     }
 
     /**
-     * @param User $user_fk
+     * @param User $author
+     * @return Article
      */
-    public function setUserFk(User $user_fk): void {
-        $this->user_fk = $user_fk;
+    public function setAuthor(User $author): self
+    {
+        $this->author = $author;
+        return $this;
     }
 }

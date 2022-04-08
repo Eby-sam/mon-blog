@@ -1,25 +1,15 @@
 <?php
 
-namespace Controller;
+namespace App\Controller;
 
-use Controller\Traits\RenderViewTrait;
-
-class HomeController {
-
-    use RenderViewTrait;
+class HomeController extends AbstractController
+{
 
     /**
-     * display the home page
+     * @return void
      */
-    public function homePage() {
-        $user = 'Anonymous';
-        if(isset($_SESSION['user'])) {
-            $user = $_SESSION['user'];
-        }
-
-        $this->render('home', 'Accueil', [
-            'user' => $user,
-        ]);
+    public function index()
+    {
+        $this->render('home/index');
     }
-
 }
