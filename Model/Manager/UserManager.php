@@ -68,7 +68,7 @@ class UserManager
         $stmt->bindValue(':firstname', $user->getFirstname());
         $stmt->bindValue(':lastname', $user->getLastname());
         $stmt->bindValue(':password', $user->getPassword());
-        $stmt->bindValue(':role_fk', 3);
+        $stmt->bindValue(':role_fk', 1);
 
         $result = $stmt->execute();
         $user->setId(Connect::dbConnect()->lastInsertId());

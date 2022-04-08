@@ -36,7 +36,8 @@ $articles = $data['articles']; ?>
             ?>
             </div>
         <a href="/index.php?c=comment&a=add-comment&id=<?= $article->getId() ?>">Ajouter un commentaire</a>
-            <hr><?php
+            <hr>
+            <br><?php
         } ?>
     </div>
 </div>

@@ -33,7 +33,6 @@ body {
     color: white;
     font-weight: bold;
     width: 100%;
-    border-bottom: 1px solid #FEFEFE;
 }
 
 .alert-error {
@@ -51,8 +50,8 @@ h1 {
 }
 
 .home {
-    background-color: #787878;
-    color: white;
+    background: linear-gradient(0.25turn,#e2e0e0, #a63f3f, #ffcb00,#e2e0e0);
+    font-size: 2.5rem;
 }
 
 a {
